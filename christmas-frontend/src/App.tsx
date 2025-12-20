@@ -6,6 +6,9 @@ import Concurso from './pages/Concurso'
 import NavidadFea from './pages/NavidadFea'
 import Ranking from './pages/Ranking'
 import Ruleta from './pages/Ruleta'
+import Villancicos from './pages/Villancicos'
+import Profile from './pages/Profile';
+import ProtectedRoute from './components/ProtectedRoute';
 
 export default function App() {
   return (
@@ -15,7 +18,13 @@ export default function App() {
         <Route path="/concurso" element={<Concurso />} />
         <Route path="/navidad-fea" element={<NavidadFea />} />
         <Route path="/ranking" element={<Ranking />} />
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        } />
         <Route path="/ruleta" element={<Ruleta />} />
+        <Route path="/villancicos" element={<Villancicos />} />
       </Routes>
     </Layout>
   )

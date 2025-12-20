@@ -1,29 +1,33 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  Column,
-  CreateDateColumn,
-  Unique,
+    Entity,
+    PrimaryGeneratedColumn,
+    ManyToOne,
+    Column,
+    CreateDateColumn,
+    Unique,
 } from 'typeorm';
 import { User } from '../users/user.entity';
-import { Drawing } from '../drawings/drawing.entity';
+import { Post } from '../posts/post.entity';
 
 @Entity('votes')
-@Unique(['user', 'drawing'])
+@Unique(['user', 'post'])
 export class Vote {
-  @PrimaryGeneratedColumn('increment')
-  id: number;
+    @PrimaryGeneratedColumn('increment')
+    id: number;
 
-  @ManyToOne(() => User)
-  user: User;
+    @ManyToOne(() => User)
+    user: User;
 
-  @ManyToOne(() => Drawing)
-  drawing: Drawing;
+    @ManyToOne(() => Post)
+    post: Post;
 
-  @Column({ default: 1 })
-  value: number;
+    @Column({
+        type: 'enum',
+        enum: ['HEART', 'LAUGH', 'WOW', 'CHRISTMAS'],
+        default: 'HEART',
+    })
+    type: string;
 
-  @CreateDateColumn()
-  createdAt: Date;
+    @CreateDateColumn()
+    createdAt: Date;
 }

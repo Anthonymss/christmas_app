@@ -1,4 +1,4 @@
-export type DrawingCategory = 'CONCURSO' | 'NAVIDAD_FEA';
+export type DrawingCategory = 'CONCURSO' | 'NAVIDAD_FEA' | 'VILLANCICOS';
 
 export interface Drawing {
     id: number;
@@ -8,4 +8,6 @@ export interface Drawing {
     userName: string;
     votesCount: number;
     createdAt: string;
+    reacters?: string[];
+    reactionsStats?: Record<string, number>;
 }

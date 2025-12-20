@@ -1,66 +1,85 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Vote } from './vote.entity';
-import { Drawing } from '../drawings/drawing.entity';
+import { Post } from '../posts/post.entity';
 import { User } from '../users/user.entity';
 import { EventsService } from '../events/events.service';
 
 @Injectable()
 export class VotesService {
-  constructor(
-    @InjectRepository(Vote)
-    private readonly votesRepo: Repository<Vote>,
-    @InjectRepository(Drawing)
-    private readonly drawingsRepo: Repository<Drawing>,
-    @InjectRepository(User)
-    private readonly usersRepo: Repository<User>,
-    private readonly events: EventsService,
-  ) { }
+    constructor(
+        @InjectRepository(Vote)
+        private readonly votesRepo: Repository<Vote>,
+        @InjectRepository(Post)
+        private readonly postsRepo: Repository<Post>,
+        @InjectRepository(User)
+        private readonly usersRepo: Repository<User>,
+        private readonly events: EventsService,
+    ) { }
 
-  async vote(userId: number, drawingId: number) {
-    const user = await this.usersRepo.findOne({ where: { id: userId } });
-    const drawing = await this.drawingsRepo.findOne({ where: { id: drawingId } });
-
-    if (!user || !drawing) {
-      throw new BadRequestException('Datos inválidos');
+    private checkTimeLock(category: string) {
+        if (category === 'VILLANCICOS') {
+            const start = new Date('2025-12-24T20:00:00-05:00');
+            if (new Date() < start) {
+                throw new ForbiddenException('Votación cerrada hasta el 24 de Diciembre 8:00 PM');
+            }
+        }
     }
 
-    const vote = this.votesRepo.create({ user, drawing });
-    try {
-      await this.votesRepo.save(vote);
-    } catch (error) {
-      if (error.code === 'ER_DUP_ENTRY') {
-        throw new BadRequestException('Ya votaste por este dibujo');
-      }
-      throw error;
+    async vote(userId: number, postId: number, type: string = 'HEART') {
+        const user = await this.usersRepo.findOne({ where: { id: userId } });
+        const post = await this.postsRepo.findOne({ where: { id: postId } });
+
+        if (!user || !post) {
+            throw new NotFoundException('Datos inválidos');
+        }
+
+        // LOCK: VILLANCICOS only allowed after Dec 24 8PM
+        this.checkTimeLock(post.category);
+
+        const existingVote = await this.votesRepo.findOne({
+            where: { user: { id: userId }, post: { id: postId } }
+        });
+
+        if (existingVote) {
+            if (existingVote.type === type) {
+                // Toggle OFF
+                await this.votesRepo.remove(existingVote);
+                await this.postsRepo.decrement({ id: postId }, 'votesCount', 1);
+                this.events.emit({ type: 'ranking_update', category: post.category });
+                return { message: 'Reacción eliminada' };
+            }
+            // Change reaction type
+            existingVote.type = type;
+            await this.votesRepo.save(existingVote);
+            this.events.emit({ type: 'ranking_update', category: post.category });
+            return { message: 'Reacción actualizada' };
+        }
+
+        const vote = this.votesRepo.create({ user, post, type });
+        await this.votesRepo.save(vote);
+
+        await this.postsRepo.increment({ id: postId }, 'votesCount', 1);
+        this.events.emit({ type: 'ranking_update', category: post.category });
+
+        return { message: 'Voto registrado' };
     }
 
-    // Increment counter
-    await this.drawingsRepo.increment({ id: drawingId }, 'votesCount', 1);
+    async ranking(category: string) {
+        // Return unified ranking structure
+        const posts = await this.postsRepo.find({
+            where: { category: category as any },
+            order: { votesCount: 'DESC', createdAt: 'ASC' },
+            relations: ['user']
+        });
 
-    // Emitir actualización de ranking
-    this.events.emit({ type: 'ranking_update' });
-
-    return { message: 'Voto registrado' };
-  }
-
-  async ranking(category?: 'CONCURSO' | 'NAVIDAD_FEA') {
-    const qb = this.drawingsRepo.createQueryBuilder('d')
-      .select(['d.id', 'd.imageUrl', 'd.votesCount', 'u.username'])
-      .innerJoin('d.user', 'u')
-      .orderBy('d.votesCount', 'DESC');
-
-    if (category) {
-      qb.where('d.category = :category', { category });
+        return posts.map(p => ({
+            drawingId: p.id, // Keeping 'drawingId' alias for frontend compatibility if needed, or update frontend
+            postId: p.id,
+            imageUrl: p.url,
+            votes: p.votesCount,
+            username: p.user.username
+        }));
     }
-
-    const results = await qb.getMany();
-    return results.map(d => ({
-      drawingId: d.id,
-      imageUrl: d.imageUrl,
-      votes: d.votesCount,
-      username: d.user.username
-    }));
-  }
 }

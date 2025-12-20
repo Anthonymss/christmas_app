@@ -2,7 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import AuthModal from './AuthModal';
-import { Gift, Menu, X, LogOut, Trophy, Disc, Image, Moon, Sun } from 'lucide-react';
+import { Gift, Menu, X, LogOut, Trophy, Disc, Image, Moon, Sun, Music } from 'lucide-react';
 import clsx from 'clsx';
 
 export default function Navbar() {
@@ -13,8 +13,7 @@ export default function Navbar() {
     const location = useLocation();
 
     useEffect(() => {
-        const isDark = localStorage.getItem('theme') === 'dark' ||
-            (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        const isDark = localStorage.getItem('theme') === 'dark';
 
         if (isDark) {
             document.documentElement.classList.add('dark');
@@ -40,6 +39,7 @@ export default function Navbar() {
     const navLinks = [
         { name: 'Concurso', path: '/concurso', icon: Image },
         { name: 'Fea Navidad', path: '/navidad-fea', icon: Gift },
+        { name: 'Villancicos', path: '/villancicos', icon: Music },
         { name: 'Ranking', path: '/ranking', icon: Trophy },
         { name: 'Ruleta', path: '/ruleta', icon: Disc },
     ];

@@ -1,22 +1,25 @@
-import { api } from './api';
+import { getPosts, uploadPost, type Post } from './posts.service';
 import type { Drawing, DrawingCategory } from '../types/drawing';
 
+// Mapper to convert Post to Drawing interface
+const mapPostToDrawing = (post: Post): Drawing => ({
+    id: post.id,
+    userId: post.userId,
+    imageUrl: post.url,
+    votesCount: post.votesCount,
+    category: post.category as DrawingCategory,
+    createdAt: post.createdAt,
+    userName: post.username,
+    reactionsStats: post.reactionsStats
+});
+
 export const getDrawings = async (category: DrawingCategory) => {
-    const res = await api.get(`/drawings?category=${category}`);
-    if (Array.isArray(res.data)) return res.data as Drawing[];
-    if (Array.isArray(res.data?.data)) return res.data.data as Drawing[];
-    return [];
+    const posts = await getPosts(category);
+    return posts.map(mapPostToDrawing);
 };
 
 export const createDrawing = async (file: File, category: DrawingCategory) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('category', category);
-
-    const { data } = await api.post('/drawings', formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
-    });
-    return data;
+    // Legacy drawings are always IMAGE type
+    const post = await uploadPost(file, category, 'IMAGE');
+    return mapPostToDrawing(post as unknown as Post); // Casting might be needed if uploadPost returns something else, but it returns Post
 };

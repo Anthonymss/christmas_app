@@ -1,8 +1,10 @@
 import { api } from './api';
 import type { DrawingCategory } from '../types/drawing';
 
-export const voteDrawing = async (drawingId: number) => {
-    const { data } = await api.post('/votes', { drawingId });
+// Now wraps to the new POST /votes/:id endpoint
+export const voteDrawing = async (drawingId: number, type: string = 'HEART') => {
+    // drawingId is postId in the new system
+    const { data } = await api.post(`/votes/${drawingId}`, { type });
     return data;
 };
 
@@ -10,5 +12,6 @@ export type RankingRow = { drawingId: number; votes: number; imageUrl: string; u
 
 export const getRanking = async (category: DrawingCategory) => {
     const { data } = await api.get(`/votes/ranking?category=${category}`);
-    return Array.isArray(data) ? (data as RankingRow[]) : (Array.isArray(data?.data) ? data.data : []);
+    // Backend returns { drawingId, postId, imageUrl, votes, username }
+    return Array.isArray(data) ? (data as RankingRow[]) : [];
 };

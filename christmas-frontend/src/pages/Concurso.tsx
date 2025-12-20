@@ -5,13 +5,15 @@ import DrawingCard from '../components/DrawingCard';
 import UploadDrawing from '../components/UploadDrawing';
 import { useAuth } from '../context/AuthContext';
 import { useSSE } from '../hooks/useSSE';
-import { Plus, Loader2 } from 'lucide-react';
+import { Plus, Loader2, HelpCircle } from 'lucide-react';
 import debounce from 'lodash.debounce';
+import InfoModal from '../components/InfoModal';
 
 export default function Concurso() {
     const [drawings, setDrawings] = useState<Drawing[]>([]);
     const [loading, setLoading] = useState(true);
     const [showUpload, setShowUpload] = useState(false);
+    const [showRules, setShowRules] = useState(false);
     const { isAuthenticated } = useAuth();
 
     const fetchDrawings = async () => {
@@ -23,7 +25,7 @@ export default function Concurso() {
     const debouncedRefresh = useMemo(
         () => debounce(() => {
             fetchDrawings();
-        }, 2000),
+        }, 100),
         []
     );
 
@@ -51,16 +53,50 @@ export default function Concurso() {
                     </p>
                 </div>
 
-                {isAuthenticated && !showUpload && (
+                <div className="flex items-center gap-3">
                     <button
-                        onClick={() => setShowUpload(true)}
-                        className="btn-primary flex items-center gap-2 self-start shadow-xl shadow-red-200 dark:shadow-red-900/20"
+                        onClick={() => setShowRules(true)}
+                        className="p-3 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 hover:shadow-lg transition-all"
+                        title="Reglas del Concurso"
                     >
-                        <Plus className="w-5 h-5" />
-                        Subir mi Arte
+                        <HelpCircle className="w-6 h-6" />
                     </button>
-                )}
+                    {isAuthenticated && !showUpload && (
+                        <button
+                            onClick={() => setShowUpload(true)}
+                            className="btn-primary flex items-center gap-2 self-start shadow-xl shadow-red-200 dark:shadow-red-900/20"
+                        >
+                            <Plus className="w-5 h-5" />
+                            Subir mi Arte
+                        </button>
+                    )}
+                </div>
             </header>
+
+            <InfoModal
+                isOpen={showRules}
+                onClose={() => setShowRules(false)}
+                title="Reglas del Concurso de Arte"
+            >
+                <ul className="space-y-3">
+                    <li className="flex gap-2">
+                        <span className="text-[#bf152d] font-bold">•</span>
+                        <span>Solo se permite material original relacionado con la navidad.</span>
+                    </li>
+                    <li className="flex gap-2">
+                        <span className="text-[#bf152d] font-bold">•</span>
+                        <span>Puedes participar con un solo dibujo o diseño.</span>
+                    </li>
+                    <li className="flex gap-2">
+                        <span className="text-[#bf152d] font-bold">•</span>
+                        <span>¡Los ganadores se mostrarán en tiempo real en el Ranking!</span>
+                    </li>
+                    <li className="flex gap-2">
+                        <span className="text-[#bf152d] font-bold">•</span>
+                        <span>Fomentamos el respeto; cualquier contenido inapropiado será eliminado.</span>
+                    </li>
+                </ul>
+            </InfoModal>
 
             {showUpload && (
                 <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 relative animate-in fade-in slide-in-from-bottom-4 duration-500 shadow-2xl shadow-red-100 dark:shadow-red-900/10 border border-rose-100 dark:border-slate-700">
