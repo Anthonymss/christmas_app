@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    .dark {
+        --color-brand-red: #ff4d6d;
+        --color-brand-pink: #ff8fa3;
+        --color-bg-light: #09090b;
+        --color-text-slate: #a1a1aa;
+        --color-text-dark: #f4f4f5;
+    }
+
+    body {
+        @apply bg-white text-slate-900 font-sans antialiased;
+        font-family: 'Outfit', sans-serif;
+    }
+}
+
+@layer components {
+    .btn-primary {
+        @apply bg-slate-900 text-white font-medium px-6 py-2.5 rounded-lg hover:bg-slate-800 transition-colors;
+    }
+
+    .btn-secondary {
+        @apply bg-white text-slate-900 border border-slate-200 font-medium px-6 py-2.5 rounded-lg hover:bg-slate-50 transition-colors;
+    }
+
+    .card-clean {
+        @apply bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-sm;
+    }
+
+    .input-minimal {
+        @apply bg-[var(--color-bg-light)] border-transparent focus:bg-white dark:focus:bg-zinc-800 focus:border-[var(--color-brand-red)] rounded-xl py-3 px-4 outline-none transition-all w-full;
+    }
+
+    .font-friendly {
+        font-family: 'Pacifico', cursive;
+    }
+}

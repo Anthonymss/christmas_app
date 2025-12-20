@@ -1,0 +1,84 @@
+import { Link } from 'react-router-dom';
+import { Palette, Share2, Trophy, Disc, ArrowRight } from 'lucide-react';
+import clsx from 'clsx';
+
+import Countdown from '../components/Countdown';
+
+export default function Home() {
+    const features = [
+        {
+            title: "Concurso",
+            desc: "Arte navideño",
+            path: "/concurso",
+            icon: Palette,
+            color: "text-[#c6416a]"
+        },
+        {
+            title: "Navidad Fea",
+            desc: "Tu mejor peor outfit",
+            path: "/navidad-fea",
+            icon: Share2,
+            color: "text-[#bf152d]"
+        },
+        {
+            title: "Ranking",
+            desc: "Tabla de líderes",
+            path: "/ranking",
+            icon: Trophy,
+            color: "text-yellow-400"
+        },
+        {
+            title: "Ruleta",
+            desc: "Prueba tu suerte",
+            path: "/ruleta",
+            icon: Disc,
+            color: "text-purple-400"
+        }
+    ];
+
+    return (
+        <div className="flex flex-col items-center justify-center min-h-[80vh] space-y-12">
+            <div className="text-center space-y-6 max-w-3xl">
+                <div className="inline-block px-4 py-1.5 rounded-full bg-white dark:bg-slate-800 text-[#bf152d] dark:text-[#ff4d6d] text-sm font-bold tracking-wider mb-4 border border-rose-100 dark:border-rose-900/30 shadow-sm">
+                    ✨ EDICIÓN 2025
+                </div>
+
+                <div className="dark:brightness-110">
+                    <Countdown />
+                </div>
+
+                <h1 className="text-6xl md:text-8xl font-friendly text-[#1e1219] dark:text-white tracking-tight leading-none drop-shadow-sm">
+                    Nuestra <span className="text-[#bf152d] dark:text-[#ff4d6d]">Navidad</span>
+                </h1>
+                <p className="text-xl text-[#41495b] dark:text-slate-300 max-w-2xl mx-auto font-light leading-relaxed">
+                    Celebra, comparte y gana en nuestra fiesta digital.
+                    <span className="block mt-2 font-medium text-[#c6416a] dark:text-[#ff8fa3]">¡Sube tu foto y participa!</span>
+                </p>
+
+                <div className="flex justify-center gap-4 pt-6">
+                    <Link to="/concurso" className="btn-primary flex items-center gap-2 text-lg px-8 py-3 shadow-red-200 dark:shadow-red-900/20">
+                        Participar Ahora
+                        <ArrowRight className="w-5 h-5" />
+                    </Link>
+                    <Link to="/ranking" className="btn-secondary flex items-center gap-2 text-lg px-8 py-3 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white">
+                        Ver Ranking
+                    </Link>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 w-full max-w-5xl">
+                {features.map((feature) => (
+                    <Link
+                        key={feature.path}
+                        to={feature.path}
+                        className="group flex flex-col items-center p-6 rounded-2xl bg-white dark:bg-slate-800 border border-rose-50 dark:border-slate-700 hover:border-red-200 dark:hover:border-red-500/30 hover:shadow-xl hover:shadow-red-500/5 dark:hover:shadow-red-500/10 transition-all duration-300 transform hover:-translate-y-1"
+                    >
+                        <feature.icon className={clsx("w-10 h-10 mb-4 transition-transform group-hover:scale-110", feature.color, "dark:brightness-125")} />
+                        <h3 className="text-lg font-bold text-[#1e1219] dark:text-white mb-1">{feature.title}</h3>
+                        <p className="text-sm text-[#41495b] dark:text-slate-400 text-center">{feature.desc}</p>
+                    </Link>
+                ))}
+            </div>
+        </div>
+    );
+}
