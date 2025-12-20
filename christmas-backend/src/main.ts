@@ -10,9 +10,8 @@ async function bootstrap() {
 
   app.enableCors({
     origin: [
-      'http://localhost:3000',
       'http://localhost:5173',
-      'https://tu-frontend.vercel.app',
+      'https://navidad-red.vercel.app',
     ],
     credentials: true,
     methods: ['GET', 'POST'],
