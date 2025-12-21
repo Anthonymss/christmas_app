@@ -10,9 +10,11 @@ export default function Profile() {
     const [loading, setLoading] = useState(true);
     const [editingPost, setEditingPost] = useState<Post | null>(null);
 
-    // Edit form state
     const [file, setFile] = useState<File | null>(null);
     const [description, setDescription] = useState('');
+    const [showNameEdit, setShowNameEdit] = useState(false);
+    const [newName, setNewName] = useState('');
+    const { } = useAuth();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
@@ -53,16 +55,41 @@ export default function Profile() {
         }
     };
 
+    const handleUpdateName = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            await import('../services/auth.service').then(m => m.updateUser(newName));
+            toast.success('Nombre actualizado. Recargando...');
+            setTimeout(() => window.location.reload(), 1000);
+        } catch (error: any) {
+            const message = error.response?.data?.message || 'Error al actualizar nombre';
+            toast.error(message);
+        }
+    };
+
     if (loading) return <div className="flex justify-center p-20"><Loader className="w-8 h-8 animate-spin text-[#bf152d]" /></div>;
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
             <header className="text-center space-y-4">
                 <div className="w-20 h-20 bg-[#bf152d] rounded-full mx-auto flex items-center justify-center text-3xl font-bold text-white shadow-lg">
-                    {user?.username[0].toUpperCase()}
+                    {user?.username?.[0]?.toUpperCase() || 'U'}
                 </div>
-                <div>
-                    <h1 className="text-3xl font-friendly text-[#1e1219] dark:text-white">Perfil de {user?.username}</h1>
+                <div className="flex flex-col items-center gap-2">
+                    <div className="flex items-center gap-3">
+                        <h1 className="text-3xl font-friendly text-[#1e1219] dark:text-white">
+                            {user?.username}
+                        </h1>
+                        <button
+                            onClick={() => {
+                                setNewName(user?.username || '');
+                                setShowNameEdit(true);
+                            }}
+                            className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors text-slate-400 hover:text-[#bf152d]"
+                        >
+                            <Edit2 className="w-5 h-5" />
+                        </button>
+                    </div>
                     <p className="text-slate-500 dark:text-slate-400">Gestiona tus participaciones</p>
                 </div>
             </header>
@@ -118,7 +145,6 @@ export default function Profile() {
                 </div>
             )}
 
-            {/* Edit Modal */}
             {editingPost && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in">
                     <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-md p-6 relative animate-in zoom-in-95">
@@ -181,6 +207,35 @@ export default function Profile() {
                                 ) : (
                                     'Confirmar Reemplazo'
                                 )}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {showNameEdit && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in">
+                    <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-sm p-6 relative animate-in zoom-in-95">
+                        <button
+                            onClick={() => setShowNameEdit(false)}
+                            className="absolute top-4 right-4 p-1 rounded-full hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                        <h2 className="text-xl font-bold mb-6 text-[#1e1219] dark:text-white">Editar Nombre</h2>
+                        <form onSubmit={handleUpdateName} className="space-y-4">
+                            <input
+                                type="text"
+                                value={newName}
+                                onChange={e => setNewName(e.target.value)}
+                                className="w-full bg-slate-50 dark:bg-zinc-800 rounded-xl px-4 py-3 font-bold text-[#1e1219] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#bf152d]"
+                                autoFocus
+                            />
+                            <button
+                                type="submit"
+                                className="w-full bg-[#bf152d] hover:bg-[#a01226] text-white font-bold py-3 rounded-xl shadow-lg shadow-red-200 dark:shadow-red-900/20 transition-all"
+                            >
+                                Guardar Cambios
                             </button>
                         </form>
                     </div>

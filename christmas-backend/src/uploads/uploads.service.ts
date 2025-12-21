@@ -26,7 +26,7 @@ export class UploadsService {
       Bucket: bucket,
       Key: key,
       ContentType: mimeType,
-      Expires: 60, // segundos
+      Expires: 60,
     };
 
     const uploadUrl = await this.s3.getSignedUrlPromise('putObject', params);

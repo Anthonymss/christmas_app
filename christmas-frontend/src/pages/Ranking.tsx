@@ -15,11 +15,10 @@ export default function Ranking() {
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [showRules, setShowRules] = useState(false);
 
-    // Date Logic
-    const isVillancicosUnlocked = new Date() >= new Date('2025-12-24T20:00:00-05:00');
+    const villancicosDateStr = import.meta.env.VITE_VOTING_OPEN_DATE || '2025-12-24T20:00:00-05:00';
+    const isVillancicosUnlocked = new Date() >= new Date(villancicosDateStr);
 
     const fetchRanking = useCallback(async () => {
-        // If Villancicos is locked and selected, don't fetch
         if (category === 'VILLANCICOS' && !isVillancicosUnlocked) {
             setRows([]);
             setLoading(false);
@@ -83,7 +82,7 @@ export default function Ranking() {
                                 : "text-zinc-600 dark:text-zinc-400 hover:text-[#c6416a] dark:hover:text-[#ff8fa3] hover:bg-pink-50 dark:hover:bg-zinc-700"
                         )}
                     >
-                        Navidad Fea
+                        Fea Navidad
                     </button>
                     <button
                         onClick={() => setCategory('VILLANCICOS')}
@@ -100,7 +99,6 @@ export default function Ranking() {
                 </div>
             </header>
 
-            {/* Content Area */}
             {category === 'VILLANCICOS' && !isVillancicosUnlocked ? (
                 <div className="flex flex-col items-center justify-center py-32 text-center animate-in fade-in zoom-in duration-500">
                     <div className="bg-amber-100 dark:bg-amber-900/20 p-8 rounded-full mb-6">
@@ -236,8 +234,6 @@ export default function Ranking() {
             }
 
             {selectedImage && category !== 'VILLANCICOS' && <ImageModal imageUrl={selectedImage} onClose={() => setSelectedImage(null)} />}
-
-            {/* Simple video modal for Villancicos previews if needed, otherwise ignore click for now or implement VideoModal */}
 
             <InfoModal
                 isOpen={showRules}

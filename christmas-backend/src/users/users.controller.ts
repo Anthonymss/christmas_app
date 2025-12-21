@@ -1,14 +1,34 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Patch, Body, Req, UseGuards, ConflictException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { JwtAuthGuard } from '../auth/auth.guard';
+import { User } from './user.entity';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
+  constructor(
+    @InjectRepository(User)
+    private readonly usersRepo: Repository<User>,
+  ) { }
+
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  me(@Req() req) {
-    return {
-      id: req.user.userId,
-      username: req.user.username,
-    };
+  async me(@Req() req) {
+    return this.usersRepo.findOne({ where: { id: req.user.userId } });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('me')
+  async update(@Req() req, @Body() dto: UpdateUserDto) {
+    const userId = req.user.userId;
+
+    const exists = await this.usersRepo.findOne({ where: { username: dto.username } });
+    if (exists && exists.id !== userId) {
+      throw new ConflictException('El nombre de usuario ya está en uso');
+    }
+
+    await this.usersRepo.update(userId, { username: dto.username });
+    return { message: 'Usuario actualizado', username: dto.username };
   }
 }

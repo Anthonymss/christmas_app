@@ -4,7 +4,7 @@ import { JwtAuthGuard } from '../auth/auth.guard';
 
 @Controller('roulette')
 export class RouletteController {
-  constructor(private readonly rouletteService: RouletteService) {}
+  constructor(private readonly rouletteService: RouletteService) { }
 
   @UseGuards(JwtAuthGuard)
   @Post('spin')
@@ -16,5 +16,13 @@ export class RouletteController {
   @Get('me')
   myResult(@Req() req) {
     return this.rouletteService.myResult(req.user.userId);
+  }
+  @Get('seed')
+  seed() {
+    return this.rouletteService.seedDefaults();
+  }
+  @Get('prizes')
+  prizes() {
+    return this.rouletteService.prizes();
   }
 }

@@ -3,11 +3,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RouletteService } from './roulette.service';
 import { RouletteController } from './roulette.controller';
 import { Roulette } from './roulette.entity';
+import { Prize } from './prize.entity';
 import { User } from '../users/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Roulette, User])],
+  imports: [TypeOrmModule.forFeature([Roulette, Prize, User])],
   providers: [RouletteService],
   controllers: [RouletteController],
 })
-export class RouletteModule {}
+export class RouletteModule { }

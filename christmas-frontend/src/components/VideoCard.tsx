@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import { Heart, MessageCircle, Music, Play, Lock } from 'lucide-react';
+import { Heart, MessageCircle, Music, Play, Lock, X } from 'lucide-react';
 import ReactionsListModal from './ReactionsListModal';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'sonner';
@@ -21,8 +21,8 @@ export default function VideoCard({ video, isActive, onUpdate }: Props) {
     const [comment, setComment] = useState('');
     const { user, isAuthenticated } = useAuth();
 
-    // Time Lock Check
-    const isVotingEnabled = new Date() >= new Date('2025-12-24T20:00:00-05:00');
+    const votingDateStr = import.meta.env.VITE_VOTING_OPEN_DATE || '2025-12-24T20:00:00-05:00';
+    const isVotingEnabled = new Date() >= new Date(votingDateStr);
 
     useEffect(() => {
         if (isActive) {
@@ -46,7 +46,9 @@ export default function VideoCard({ video, isActive, onUpdate }: Props) {
 
     const handleVote = async (type: string = 'HEART') => {
         if (!isVotingEnabled) {
-            toast.error('Las votaciones se abren el 24 de Diciembre a las 8:00 PM');
+            const dateObj = new Date(votingDateStr);
+            const msg = dateObj.toLocaleString('es-PE', { day: 'numeric', month: 'long', hour: 'numeric', minute: 'numeric', hour12: true });
+            toast.error(`Las votaciones se abren el ${msg}`);
             return;
         }
         if (!isAuthenticated) return toast.error('Inicia sesión para votar');
@@ -77,7 +79,6 @@ export default function VideoCard({ video, isActive, onUpdate }: Props) {
 
     return (
         <div className="relative h-screen w-full bg-black flex items-center justify-center snap-start video-card-container">
-            {/* Video Player */}
             <div className="relative h-full w-full max-w-md mx-auto bg-black" onClick={togglePlay}>
                 <video
                     ref={videoRef}
@@ -94,7 +95,6 @@ export default function VideoCard({ video, isActive, onUpdate }: Props) {
                     </div>
                 )}
 
-                {/* Right Side Actions */}
                 <div className="absolute right-4 bottom-24 flex flex-col items-center gap-6 z-20">
                     <div className="flex flex-col items-center gap-1">
                         <button
@@ -137,7 +137,6 @@ export default function VideoCard({ video, isActive, onUpdate }: Props) {
                     </button>
                 </div>
 
-                {/* Bottom Info */}
                 <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 to-transparent z-10">
                     <div className="max-w-[80%]">
                         @{video.username}
@@ -154,12 +153,16 @@ export default function VideoCard({ video, isActive, onUpdate }: Props) {
                 </div>
             </div>
 
-            {/* Comments Drawer */}
             {showComments && (
                 <div className="absolute inset-x-0 bottom-0 h-[60vh] bg-white dark:bg-slate-900 rounded-t-3xl z-30 flex flex-col animate-in slide-in-from-bottom duration-300">
                     <div className="flex items-center justify-between p-4 border-b dark:border-slate-800">
-                        <h3 className="font-bold text-center flex-1">Comentarios ({video.comments.length})</h3>
-                        <button onClick={() => setShowComments(false)} className="p-2">✕</button>
+                        <h3 className="font-bold text-center flex-1 text-slate-900 dark:text-white">Comentarios ({video.comments.length})</h3>
+                        <button
+                            onClick={() => setShowComments(false)}
+                            className="p-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+                        >
+                            <X size={24} />
+                        </button>
                     </div>
 
                     <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -209,7 +212,7 @@ export default function VideoCard({ video, isActive, onUpdate }: Props) {
             )}
             {showReactionsModal && (
                 <ReactionsListModal
-                    reacters={video.reacters || []} // We need to ensure video.reacters is available. I added it in Post interface.
+                    reacters={video.reacters || []}
                     onClose={() => setShowReactionsModal(false)}
                 />
             )}

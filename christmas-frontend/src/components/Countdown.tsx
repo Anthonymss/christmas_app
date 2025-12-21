@@ -4,7 +4,7 @@ export default function Countdown() {
     const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number; seconds: number } | null>(null);
 
     useEffect(() => {
-        const targetDate = new Date('2025-12-25T00:00:00');
+        const targetDate = new Date(import.meta.env.VITE_EVENT_DATE || '2025-12-25T00:00:00');
 
         const calculateTimeLeft = () => {
             const difference = +targetDate - +new Date();

@@ -1,6 +1,7 @@
 import { Injectable, BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { ConfigService } from '@nestjs/config';
 import { Vote } from './vote.entity';
 import { Post } from '../posts/post.entity';
 import { User } from '../users/user.entity';
@@ -16,13 +17,18 @@ export class VotesService {
         @InjectRepository(User)
         private readonly usersRepo: Repository<User>,
         private readonly events: EventsService,
+        private readonly configService: ConfigService,
     ) { }
 
     private checkTimeLock(category: string) {
         if (category === 'VILLANCICOS') {
-            const start = new Date('2025-12-24T20:00:00-05:00');
+            const dateStr = this.configService.get('VOTING_OPEN_DATE') || '2025-12-24T20:00:00-05:00';
+            const start = new Date(dateStr);
             if (new Date() < start) {
-                throw new ForbiddenException('Votación cerrada hasta el 24 de Diciembre 8:00 PM');
+                const dateMsg = start.toLocaleString('es-PE', {
+                    month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true
+                });
+                throw new ForbiddenException(`Votación cerrada hasta el ${dateMsg}`);
             }
         }
     }
@@ -35,7 +41,6 @@ export class VotesService {
             throw new NotFoundException('Datos inválidos');
         }
 
-        // LOCK: VILLANCICOS only allowed after Dec 24 8PM
         this.checkTimeLock(post.category);
 
         const existingVote = await this.votesRepo.findOne({
@@ -44,13 +49,11 @@ export class VotesService {
 
         if (existingVote) {
             if (existingVote.type === type) {
-                // Toggle OFF
                 await this.votesRepo.remove(existingVote);
                 await this.postsRepo.decrement({ id: postId }, 'votesCount', 1);
                 this.events.emit({ type: 'ranking_update', category: post.category });
                 return { message: 'Reacción eliminada' };
             }
-            // Change reaction type
             existingVote.type = type;
             await this.votesRepo.save(existingVote);
             this.events.emit({ type: 'ranking_update', category: post.category });
@@ -67,7 +70,6 @@ export class VotesService {
     }
 
     async ranking(category: string) {
-        // Return unified ranking structure
         const posts = await this.postsRepo.find({
             where: { category: category as any },
             order: { votesCount: 'DESC', createdAt: 'ASC' },
@@ -75,7 +77,7 @@ export class VotesService {
         });
 
         return posts.map(p => ({
-            drawingId: p.id, // Keeping 'drawingId' alias for frontend compatibility if needed, or update frontend
+            drawingId: p.id,
             postId: p.id,
             imageUrl: p.url,
             votes: p.votesCount,

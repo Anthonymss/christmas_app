@@ -4,8 +4,8 @@ export class RegisterDto {
   @IsString()
   @MinLength(3)
   @MaxLength(30)
-  @Matches(/^[a-zA-Z0-9_.-]+$/, {
-    message: 'username solo puede contener letras, números, _, ., -',
+  @Matches(/^[a-zA-Z0-9_.\- ]+$/, {
+    message: 'username solo puede contener letras, números, _, ., - y espacios',
   })
   username: string;
 

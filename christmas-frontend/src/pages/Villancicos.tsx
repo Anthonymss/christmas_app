@@ -26,7 +26,6 @@ export default function Villancicos() {
         fetchVideos();
     }, [fetchVideos]);
 
-    // Handle Scroll for snapping
     const handleScroll = () => {
         if (!containerRef.current) return;
         const index = Math.round(containerRef.current.scrollTop / containerRef.current.clientHeight);
@@ -35,7 +34,7 @@ export default function Villancicos() {
 
     useSSE(`${import.meta.env.VITE_API_URL}/events`, (evt) => {
         if (evt?.type === 'ranking_update') {
-            fetchVideos(); // Refresh feed
+            fetchVideos();
         }
     });
 
@@ -43,8 +42,8 @@ export default function Villancicos() {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        if (file.size > 50 * 1024 * 1024) { // 50MB limit
-            return toast.error('El video debe pesar menos de 50MB');
+        if (file.size > 100 * 1024 * 1024) {
+            return toast.error('El video debe pesar menos de 100MB');
         }
 
         setIsUploading(true);
@@ -53,9 +52,10 @@ export default function Villancicos() {
         try {
             await uploadPost(file, 'VILLANCICOS', 'VIDEO', 'Mi Villancico Navideño 🎄');
             toast.success('¡Villancico subido con éxito!', { id: toastId });
-            // SSE will trigger refresh
-        } catch (error) {
-            toast.error('Error al subir video', { id: toastId });
+            fetchVideos();
+        } catch (error: any) {
+            const message = error.response?.data?.message || 'Error al subir video';
+            toast.error(message, { id: toastId });
         } finally {
             setIsUploading(false);
         }
@@ -63,7 +63,6 @@ export default function Villancicos() {
 
     return (
         <div className="h-[calc(100vh-64px)] w-full bg-black relative">
-            {/* Upload Button */}
             {isAuthenticated && (
                 <div className="absolute top-4 right-4 z-50">
                     <label className={`
@@ -87,7 +86,6 @@ export default function Villancicos() {
                 </div>
             )}
 
-            {/* Video Feed */}
             <div
                 ref={containerRef}
                 className="h-full w-full overflow-y-scroll snap-y snap-mandatory scroll-smooth no-scrollbar"

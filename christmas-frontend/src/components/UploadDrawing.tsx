@@ -24,9 +24,10 @@ export default function UploadDrawing({
             await createDrawing(file, category);
             toast.success('¡Imagen subida con éxito!');
             onUploadSuccess();
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            toast.error('Falló la subida. Inténtalo de nuevo.');
+            const message = error.response?.data?.message || 'Falló la subida. Inténtalo de nuevo.';
+            toast.error(message);
         } finally {
             setUploading(false);
         }

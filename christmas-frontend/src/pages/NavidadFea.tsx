@@ -42,8 +42,8 @@ export default function NavidadFea() {
         <div className="space-y-12">
             <header className="text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-rose-100 dark:border-rose-900/30">
                 <div className="space-y-4">
-                    <h1 className="text-5xl md:text-6xl font-friendly text-[#1e1219] dark:text-white tracking-tight">
-                        Navidad <span className="text-[#bf152d] dark:text-[#ff4d6d]">Fea</span>
+                    <h1 className="text-5xl md:text-6xl font-friendly text-[#1e1219] dark:text-[#ff4d6d]">
+                        Fea <span className="text-[#bf152d]  dark:text-white tracking-tight">Navidad</span>
                     </h1>
                     <p className="text-[#41495b] dark:text-slate-400 max-w-lg font-light text-lg">
                         Humor, memes y anti-arte navideño. <br />
@@ -74,7 +74,7 @@ export default function NavidadFea() {
             <InfoModal
                 isOpen={showRules}
                 onClose={() => setShowRules(false)}
-                title="Reglas de Navidad Fea"
+                title="Reglas de    Fea Navidad"
             >
                 <div className="space-y-4">
                     <p>Este es el rincón del humor y lo absurdo. Aquí las reglas para el "anti-concurso":</p>

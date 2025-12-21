@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Palette, Share2, Trophy, Disc, ArrowRight } from 'lucide-react';
+import { Palette, Gift, Trophy, Disc, ArrowRight, Music } from 'lucide-react';
 import clsx from 'clsx';
 
 import Countdown from '../components/Countdown';
@@ -14,11 +14,18 @@ export default function Home() {
             color: "text-[#c6416a]"
         },
         {
-            title: "Navidad Fea",
+            title: "Fea Navidad",
             desc: "Tu mejor peor outfit",
             path: "/navidad-fea",
-            icon: Share2,
+            icon: Gift,
             color: "text-[#bf152d]"
+        },
+        {
+            title: "Villancicos",
+            desc: "Canta y gana",
+            path: "/villancicos",
+            icon: Music,
+            color: "text-emerald-500"
         },
         {
             title: "Ranking",
@@ -37,8 +44,8 @@ export default function Home() {
     ];
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-[80vh] space-y-12">
-            <div className="text-center space-y-6 max-w-3xl">
+        <div className="flex flex-col items-center justify-center min-h-[80vh] space-y-12 py-8">
+            <div className="text-center space-y-6 max-w-3xl px-4">
                 <div className="inline-block px-4 py-1.5 rounded-full bg-white dark:bg-slate-800 text-[#bf152d] dark:text-[#ff4d6d] text-sm font-bold tracking-wider mb-4 border border-rose-100 dark:border-rose-900/30 shadow-sm">
                     ✨ EDICIÓN 2025
                 </div>
@@ -47,12 +54,12 @@ export default function Home() {
                     <Countdown />
                 </div>
 
-                <h1 className="text-6xl md:text-8xl font-friendly text-[#1e1219] dark:text-white tracking-tight leading-none drop-shadow-sm">
+                <h1 className="text-5xl md:text-7xl font-friendly text-[#1e1219] dark:text-white tracking-tight leading-none drop-shadow-sm">
                     Nuestra <span className="text-[#bf152d] dark:text-[#ff4d6d]">Navidad</span>
                 </h1>
-                <p className="text-xl text-[#41495b] dark:text-slate-300 max-w-2xl mx-auto font-light leading-relaxed">
+                <p className="text-lg md:text-xl text-[#41495b] dark:text-slate-300 max-w-2xl mx-auto font-light leading-relaxed">
                     Celebra, comparte y gana en nuestra fiesta digital.
-                    <span className="block mt-2 font-medium text-[#c6416a] dark:text-[#ff8fa3]">¡Sube tu foto y participa!</span>
+                    <span className="block mt-2 font-medium text-[#c6416a] dark:text-[#ff8fa3]">¡Elige una categoría y participa!</span>
                 </p>
 
                 <div className="flex justify-center gap-4 pt-6">
@@ -66,16 +73,16 @@ export default function Home() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 w-full max-w-5xl">
+            <div className="flex flex-wrap justify-center gap-6 w-full max-w-6xl px-4">
                 {features.map((feature) => (
                     <Link
                         key={feature.path}
                         to={feature.path}
-                        className="group flex flex-col items-center p-6 rounded-2xl bg-white dark:bg-slate-800 border border-rose-50 dark:border-slate-700 hover:border-red-200 dark:hover:border-red-500/30 hover:shadow-xl hover:shadow-red-500/5 dark:hover:shadow-red-500/10 transition-all duration-300 transform hover:-translate-y-1"
+                        className="group flex flex-col items-center p-8 rounded-3xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-red-200 dark:hover:border-red-500/30 hover:shadow-xl hover:shadow-red-500/5 dark:hover:shadow-red-500/10 transition-all duration-300 transform hover:-translate-y-1 w-full sm:w-[calc(50%-12px)] md:w-[calc(33.33%-16px)] lg:w-[calc(20%-20px)] min-w-[200px]"
                     >
-                        <feature.icon className={clsx("w-10 h-10 mb-4 transition-transform group-hover:scale-110", feature.color, "dark:brightness-125")} />
-                        <h3 className="text-lg font-bold text-[#1e1219] dark:text-white mb-1">{feature.title}</h3>
-                        <p className="text-sm text-[#41495b] dark:text-slate-400 text-center">{feature.desc}</p>
+                        <feature.icon className={clsx("w-12 h-12 mb-4 transition-transform group-hover:scale-110", feature.color, "dark:brightness-125")} />
+                        <h3 className="text-xl font-bold text-[#1e1219] dark:text-white mb-2">{feature.title}</h3>
+                        <p className="text-sm text-[#41495b] dark:text-slate-400 text-center font-medium opacity-80">{feature.desc}</p>
                     </Link>
                 ))}
             </div>

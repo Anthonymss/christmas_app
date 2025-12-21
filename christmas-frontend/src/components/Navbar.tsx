@@ -87,9 +87,21 @@ export default function Navbar() {
 
                         {isAuthenticated ? (
                             <div className="flex items-center gap-3 pl-6 border-l border-slate-200 dark:border-slate-800">
-                                <span className="text-sm font-medium text-slate-600 dark:text-slate-300">
-                                    {user?.username}
-                                </span>
+                                <Link
+                                    to="/profile"
+                                    className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-[#bf152d] dark:hover:text-[#bf152d] transition-colors"
+                                >
+                                    {user?.username || 'Mi Perfil'}
+                                </Link>
+                                <Link
+                                    to="/profile"
+                                    className="p-2 text-slate-400 hover:text-[#bf152d] transition-colors rounded-lg hover:bg-rose-50 dark:hover:bg-rose-900/10"
+                                    title="Mi Perfil"
+                                >
+                                    <div className="w-5 h-5 bg-[#bf152d] rounded-full flex items-center justify-center text-[10px] text-white font-bold">
+                                        {user?.username?.[0]?.toUpperCase() || 'U'}
+                                    </div>
+                                </Link>
                                 <button
                                     onClick={logout}
                                     className="p-2 text-slate-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50 dark:hover:bg-red-900/10"
@@ -140,13 +152,25 @@ export default function Navbar() {
                         ))}
                         <div className="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800">
                             {isAuthenticated ? (
-                                <button
-                                    onClick={logout}
-                                    className="w-full text-left p-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg flex items-center gap-2"
-                                >
-                                    <LogOut className="w-4 h-4" />
-                                    Cerrar Sesión
-                                </button>
+                                <>
+                                    <Link
+                                        to="/profile"
+                                        onClick={() => setMobileMenuOpen(false)}
+                                        className="flex items-center gap-3 p-3 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+                                    >
+                                        <div className="w-5 h-5 bg-[#bf152d] rounded-full flex items-center justify-center text-[10px] text-white font-bold">
+                                            {user?.username[0].toUpperCase()}
+                                        </div>
+                                        Mi Perfil ({user?.username})
+                                    </Link>
+                                    <button
+                                        onClick={logout}
+                                        className="w-full text-left p-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg flex items-center gap-2"
+                                    >
+                                        <LogOut className="w-4 h-4" />
+                                        Cerrar Sesión
+                                    </button>
+                                </>
                             ) : (
                                 <button
                                     onClick={() => { setOpenAuth(true); setMobileMenuOpen(false); }}

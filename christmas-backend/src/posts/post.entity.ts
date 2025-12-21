@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { User } from '../users/user.entity';
 import { Vote } from '../votes/vote.entity';
-import { PostComment } from './post-comment.entity'; // Renamed to clearly indicate it belongs to Post
+import { PostComment } from './post-comment.entity';
 
 export enum PostCategory {
     CONCURSO = 'CONCURSO',

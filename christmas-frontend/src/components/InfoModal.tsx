@@ -20,7 +20,6 @@ export default function InfoModal({ title, isOpen, onClose, children }: Props) {
             />
 
             <div className="relative bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-100 dark:border-zinc-800">
-                {/* Header Decoration */}
                 <div className="h-2 bg-gradient-to-r from-[#bf152d] via-[#c6416a] to-[#bf152d]" />
 
                 <div className="p-8">

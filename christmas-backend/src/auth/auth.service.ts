@@ -13,7 +13,7 @@ export class AuthService {
     @InjectRepository(User)
     private readonly usersRepo: Repository<User>,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async register(dto: RegisterDto) {
     const exists = await this.usersRepo.findOne({ where: { username: dto.username } });
@@ -38,7 +38,7 @@ export class AuthService {
     const ok = await bcrypt.compare(dto.password, user.password);
     if (!ok) throw new UnauthorizedException('Credenciales inválidas');
 
-    const token = this.jwtService.sign({ sub: user.id });
+    const token = this.jwtService.sign({ sub: user.id, username: user.username });
 
     return { access_token: token };
   }
