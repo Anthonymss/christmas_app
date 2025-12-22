@@ -16,13 +16,14 @@ export class AuthService {
   ) { }
 
   async register(dto: RegisterDto) {
-    const exists = await this.usersRepo.findOne({ where: { username: dto.username } });
+    const username = dto.username.trim().toLowerCase();
+    const exists = await this.usersRepo.findOne({ where: { username } });
     if (exists) throw new ConflictException('Usuario ya existe');
 
     const hash = await bcrypt.hash(dto.password, 10);
 
     const user = this.usersRepo.create({
-      username: dto.username,
+      username,
       password: hash,
     });
 
@@ -32,7 +33,8 @@ export class AuthService {
   }
 
   async login(dto: LoginDto) {
-    const user = await this.usersRepo.findOne({ where: { username: dto.username } });
+    const username = dto.username.trim().toLowerCase();
+    const user = await this.usersRepo.findOne({ where: { username } });
     if (!user) throw new UnauthorizedException('Credenciales inválidas');
 
     const ok = await bcrypt.compare(dto.password, user.password);

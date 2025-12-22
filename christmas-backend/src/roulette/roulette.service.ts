@@ -108,8 +108,6 @@ export class RouletteService {
     };
   }
   async prizes() {
-    return this.prizeRepo.findBy({
-      stock: MoreThan(0),
-    });
+    return this.prizeRepo.find({ order: { stock: 'DESC' } });
   }
 }

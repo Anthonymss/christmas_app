@@ -22,13 +22,14 @@ export class UsersController {
   @Patch('me')
   async update(@Req() req, @Body() dto: UpdateUserDto) {
     const userId = req.user.userId;
+    const username = dto.username.trim().toLowerCase();
 
-    const exists = await this.usersRepo.findOne({ where: { username: dto.username } });
+    const exists = await this.usersRepo.findOne({ where: { username } });
     if (exists && exists.id !== userId) {
       throw new ConflictException('El nombre de usuario ya está en uso');
     }
 
-    await this.usersRepo.update(userId, { username: dto.username });
-    return { message: 'Usuario actualizado', username: dto.username };
+    await this.usersRepo.update(userId, { username });
+    return { message: 'Usuario actualizado', username };
   }
 }

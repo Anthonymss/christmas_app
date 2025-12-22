@@ -1,10 +1,15 @@
 import { useState, useEffect } from 'react';
 
-export default function Countdown() {
+interface Props {
+    targetDate?: string;
+}
+
+export default function Countdown({ targetDate: propTargetDate }: Props) {
     const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number; seconds: number } | null>(null);
 
     useEffect(() => {
-        const targetDate = new Date(import.meta.env.VITE_EVENT_DATE || '2025-12-25T00:00:00');
+        const targetStr = propTargetDate || import.meta.env.VITE_EVENT_DATE || '2025-12-25T00:00:00';
+        const targetDate = new Date(targetStr);
 
         const calculateTimeLeft = () => {
             const difference = +targetDate - +new Date();

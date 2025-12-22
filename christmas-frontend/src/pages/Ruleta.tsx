@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Wheel } from 'react-custom-roulette';
 import * as roulette from '../services/roulette.service';
 import { useAuth } from '../context/AuthContext';
-import { AlertCircle, Disc, Gift, Snowflake } from 'lucide-react';
+import { AlertCircle, Disc, Gift, Snowflake, Lock } from 'lucide-react';
 import clsx from 'clsx';
 import { toast } from 'sonner';
 import Countdown from '../components/Countdown';
@@ -106,11 +106,12 @@ export default function Ruleta() {
         toast.success("¡FELICIDADES! 🎁", { description: `Ganaste: ${wonPrize?.name}` });
     };
 
-    const wheelData = prizes.map((p, i) => ({
-        option: p.name,
-        style: { backgroundColor: COLORS[i % COLORS.length], textColor: 'white' }
-    }));
-
+    const wheelData = prizes
+        .filter(p => p.stock > 0)
+        .map((p, i) => ({
+            option: p.name,
+            style: { backgroundColor: COLORS[i % COLORS.length], textColor: 'white' }
+        }));
 
     if (!isAuthenticated) return (
         <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-4 animate-in fade-in zoom-in duration-500">
@@ -124,16 +125,6 @@ export default function Ruleta() {
     if (loading && prizes.length === 0) return (
         <div className="flex items-center justify-center min-h-[50vh]">
             <div className="animate-spin text-[#bf152d]"><Disc size={40} /></div>
-        </div>
-    );
-
-    if (!loading && prizes.length === 0) return (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-4 animate-in fade-in zoom-in duration-500">
-            <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-full grayscale opacity-50">
-                <Gift className="w-12 h-12 text-slate-400" />
-            </div>
-            <h2 className="text-2xl font-bold text-slate-500 dark:text-slate-400">¡Se acabaron los premios!</h2>
-            <p className="text-slate-400">Todo ha sido canjeado. Gracias por participar.</p>
         </div>
     );
 
@@ -154,10 +145,23 @@ export default function Ruleta() {
                 <p className="text-slate-500 dark:text-slate-400 mt-2 font-medium">¡Prueba tu suerte!</p>
                 <div className="mt-4 flex flex-wrap justify-center gap-2 max-w-2xl mx-auto px-4">
                     {prizes.map((p, i) => (
-                        <div key={i} className="flex items-center gap-1.5 bg-white dark:bg-slate-800 px-3 py-1 rounded-full text-xs font-bold border border-slate-200 dark:border-slate-700 shadow-sm text-slate-600 dark:text-slate-300">
-                            {p.name}
-                            <span className={clsx("ml-1 px-1.5 rounded-full text-[10px]", p.stock > 0 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700")}>
-                                {p.stock}
+                        <div
+                            key={i}
+                            className={clsx(
+                                "flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border shadow-sm transition-all",
+                                p.stock > 0
+                                    ? "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300"
+                                    : "bg-slate-100 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-600 grayscale opacity-70"
+                            )}
+                        >
+                            <span className={clsx(p.stock === 0 && "line-through decoration-red-500")}>
+                                {p.name}
+                            </span>
+                            <span className={clsx(
+                                "ml-1 px-1.5 rounded-full text-[10px]",
+                                p.stock > 0 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                            )}>
+                                {p.stock > 0 ? p.stock : "Agotado"}
                             </span>
                         </div>
                     ))}
@@ -177,8 +181,8 @@ export default function Ruleta() {
                 </div>
             ) : (
                 <div className="relative z-20 flex flex-col items-center">
-                    <div className="scale-90 md:scale-100 transform transition-transform">
-                        {wheelData.length > 0 && (
+                    <div className={clsx("scale-90 md:scale-100 transform transition-all duration-500 relative", isLocked && "grayscale opacity-60 blur-[1px]")}>
+                        {wheelData.length > 0 ? (
                             <Wheel
                                 mustStartSpinning={mustSpin}
                                 prizeNumber={prizeNumber}
@@ -197,25 +201,38 @@ export default function Ruleta() {
                                 backgroundColors={COLORS}
                                 textColors={['#ffffff']}
                             />
+                        ) : (
+                            <div className="w-[440px] h-[440px] rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center border-4 border-slate-200 dark:border-slate-700 border-dashed">
+                                <span className="text-slate-400 font-bold">Sin Premios Disponibles</span>
+                            </div>
+                        )}
+
+                        {isLocked && (
+                            <div className="absolute inset-0 flex items-center justify-center z-50">
+                                <div className="bg-black/50 p-4 rounded-full backdrop-blur-sm border border-white/20 shadow-2xl animate-pulse">
+                                    <Lock size={64} className="text-white drop-shadow-lg" />
+                                </div>
+                            </div>
                         )}
                     </div>
+
                     {!isLocked ? (
                         <button
                             onClick={handleSpinClick}
-                            disabled={mustSpin}
+                            disabled={mustSpin || wheelData.length === 0}
                             className={clsx(
                                 "mt-8 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-bold text-xl px-12 py-4 rounded-full shadow-lg hover:shadow-xl transition-all border-b-4 border-emerald-800 active:border-b-0 active:translate-y-1 relative z-30",
-                                mustSpin && "opacity-50 cursor-not-allowed"
+                                (mustSpin || wheelData.length === 0) && "opacity-50 cursor-not-allowed"
                             )}
                         >
                             {mustSpin ? 'Girando...' : '¡GIRAR AHORA!'}
                         </button>
                     ) : (
-                        <div className="mt-8 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl p-4 flex items-center gap-4 animate-pulse">
+                        <div className="mt-8 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl p-4 flex items-center gap-4">
                             <AlertCircle className="text-amber-500" />
                             <div>
                                 <h3 className="font-bold text-amber-700 dark:text-amber-400 text-sm">Próximamente</h3>
-                                <Countdown />
+                                <Countdown targetDate={import.meta.env.VITE_VOTING_OPEN_DATE} />
                             </div>
                         </div>
                     )}
