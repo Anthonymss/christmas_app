@@ -20,7 +20,7 @@ export default function SnowEffect() {
             {snowflakes.map((flake) => (
                 <div
                     key={flake.id}
-                    className="absolute top-[-20px] bg-white rounded-full opacity-80 animate-fall"
+                    className="absolute top-[-20px] text-white/80 animate-fall"
                     style={{
                         left: flake.left,
                         width: `${flake.size}px`,
@@ -29,7 +29,27 @@ export default function SnowEffect() {
                         animationDelay: flake.delay,
                         opacity: flake.opacity
                     }}
-                ></div>
+                >
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="w-full h-full"
+                    >
+                        <path d="M2.05 2.05h2l2 7 2-7h2" stroke="none" />
+                        <path d="M12 2v20" />
+                        <path d="M2 12h20" />
+                        <path d="m4.93 4.93 14.14 14.14" />
+                        <path d="m19.07 4.93-14.14 14.14" />
+                        <path d="M12 2 10 4" /><path d="M12 2 14 4" />
+                        <path d="M12 22 10 20" /><path d="M12 22 14 20" />
+                        <path d="M2 12 4 10" /><path d="M2 12 4 14" />
+                        <path d="M22 12 20 10" /><path d="M22 12 20 14" />
+                    </svg>
+                </div>
             ))}
             <style>{`
                 @keyframes fall {

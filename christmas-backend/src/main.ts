@@ -14,9 +14,10 @@ async function bootstrap() {
       'https://navidad-red.vercel.app',
     ],
     credentials: true,
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
+
 
   app.useGlobalPipes(
     new ValidationPipe({
