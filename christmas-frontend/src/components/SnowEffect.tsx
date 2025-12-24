@@ -4,14 +4,17 @@ export default function SnowEffect() {
     const [snowflakes, setSnowflakes] = useState<Array<{ id: number; left: string; animationDuration: string; delay: string; opacity: number; size: number }>>([]);
 
     useEffect(() => {
-        const flakes = Array.from({ length: 50 }).map((_, i) => ({
-            id: i,
-            left: `${Math.random() * 100}%`,
-            animationDuration: `${Math.random() * 3 + 10}s`,
-            delay: `${Math.random() * 5}s`,
-            opacity: Math.random() * 0.5 + 0.3,
-            size: Math.random() * 10 + 5
-        }));
+        const flakes = Array.from({ length: 75 }).map((_, i) => {
+            const duration = Math.random() * 15 + 10; // 10s to 25s
+            return {
+                id: i,
+                left: `${Math.random() * 100}%`,
+                animationDuration: `${duration}s`,
+                delay: `-${Math.random() * duration}s`, // Negative delay to start mid-animation
+                opacity: Math.random() * 0.5 + 0.3, // 0.3 to 0.8
+                size: Math.random() * 12 + 8 // 8px to 20px
+            };
+        });
         setSnowflakes(flakes);
     }, []);
 

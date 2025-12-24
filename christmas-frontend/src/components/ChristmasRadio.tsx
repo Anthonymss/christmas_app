@@ -61,7 +61,7 @@ export default function ChristmasRadio() {
             <button
                 onClick={togglePlay}
                 className={`flex items-center gap-3 pr-4 pl-3 py-3 rounded-full shadow-xl transition-all duration-300 border border-white/20 backdrop-blur-md group ${isPlaying
-                    ? 'bg-[#165B33] text-white w-48'
+                    ? 'bg-[#165B33] text-white w-14 md:w-48' // Compact on mobile, wide on desktop
                     : 'bg-white/90 dark:bg-zinc-800/90 text-[#C41E3A] hover:scale-105 w-12'
                     } overflow-hidden whitespace-nowrap`}
                 title="Radio Polo Norte"
@@ -71,13 +71,15 @@ export default function ChristmasRadio() {
                     {isPlaying && <span className="absolute -top-1 -right-1 text-xs">🎵</span>}
                 </div>
 
-                <div className={`flex flex-col items-start transition-opacity duration-300 ${isPlaying ? 'opacity-100' : 'opacity-0 w-0'}`}>
+                {/* Text only visible on desktop (md+) */}
+                <div className={`hidden md:flex flex-col items-start transition-opacity duration-300 ${isPlaying ? 'opacity-100' : 'opacity-0 w-0'}`}>
                     <span className="text-xs font-bold text-green-100 uppercase tracking-wider">Radio Polo Norte</span>
                     <span className="text-sm font-medium truncate w-24">En Vivo 🔴</span>
                 </div>
 
+                {/* Visualizer only visible on desktop (md+) when playing */}
                 {isPlaying && (
-                    <div className="flex gap-1 items-end h-4 ml-auto">
+                    <div className="hidden md:flex gap-1 items-end h-4 ml-auto">
                         <div className="w-1 bg-green-200 animate-pulse h-2" style={{ animationDelay: '0s' }} />
                         <div className="w-1 bg-green-200 animate-pulse h-4" style={{ animationDelay: '0.2s' }} />
                         <div className="w-1 bg-green-200 animate-pulse h-3" style={{ animationDelay: '0.4s' }} />
