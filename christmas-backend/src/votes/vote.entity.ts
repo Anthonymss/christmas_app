@@ -15,7 +15,7 @@ export class Vote {
     @PrimaryGeneratedColumn('increment')
     id: number;
 
-    @ManyToOne(() => User)
+    @ManyToOne(() => User, { eager: true })
     user: User;
 
     @ManyToOne(() => Post)

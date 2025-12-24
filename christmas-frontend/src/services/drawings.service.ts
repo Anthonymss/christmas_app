@@ -9,6 +9,7 @@ const mapPostToDrawing = (post: Post): Drawing => ({
     category: post.category as DrawingCategory,
     createdAt: post.createdAt,
     userName: post.username,
+    reacters: post.reacters,
     reactionsStats: post.reactionsStats
 });
 
