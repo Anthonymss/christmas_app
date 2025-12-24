@@ -14,11 +14,15 @@ async function bootstrap() {
   app.use(express.urlencoded({ extended: true, limit: '1gb' }));
 
   app.enableCors({
-    origin: true, // Allow all origins dynamically (helps with mobile/webview quirks)
+    origin: [
+      'http://localhost:5173',
+      'https://navidad-red.vercel.app',
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
+
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -28,7 +32,6 @@ async function bootstrap() {
     }),
   );
 
-  const server = await app.listen(process.env.PORT || 3000);
-  server.setTimeout(300000); // 5 minutes timeout for large uploads
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
