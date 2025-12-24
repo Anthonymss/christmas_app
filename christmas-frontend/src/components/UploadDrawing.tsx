@@ -26,7 +26,10 @@ export default function UploadDrawing({
             onUploadSuccess();
         } catch (error: any) {
             console.error(error);
-            const message = error.response?.data?.message || 'Falló la subida. Inténtalo de nuevo.';
+            console.error(error);
+            const message = error.response?.data?.message || 'Falló la subida.';
+            // Detailed error for debugging
+            alert(`Error detallado: ${JSON.stringify(error.response?.data || error.message)}`);
             toast.error(message);
         } finally {
             setUploading(false);
