@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD700"/>
+      <stop offset="50%" stop-color="#FDB931"/>
+      <stop offset="100%" stop-color="#D4AF37"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <g stroke="url(#gold)" stroke-width="32" stroke-linecap="round" fill="none" transform="translate(256 256)">
+    <!-- Main branches -->
+    <line x1="0" y1="-220" x2="0" y2="220" />
+    <line x1="-190.5" y1="-110" x2="190.5" y2="110" />
+    <line x1="-190.5" y1="110" x2="190.5" y2="-110" />
+    
+    <!-- Secondary details -->
+    <circle cx="0" cy="0" r="40" fill="url(#gold)" stroke="none"/>
+    
+    <!-- Decorative tips (rotated around center) -->
+    <g>
+       <path d="M0 -160 L-30 -200 M0 -160 L30 -200" />
+       <path d="M0 160 L-30 200 M0 160 L30 200" />
+       
+       <path d="M138 -80 L173 -100 M138 -80 L158 -126" />
+       <path d="M-138 80 L-173 100 M-138 80 L-158 126" />
+       
+       <path d="M138 80 L173 100 M138 80 L158 126" />
+       <path d="M-138 -80 L-173 -100 M-138 -80 L-158 -126" />
+    </g>
+  </g>
+</svg>
