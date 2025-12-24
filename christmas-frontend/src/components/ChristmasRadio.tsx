@@ -18,15 +18,12 @@ export default function ChristmasRadio() {
         const handleError = (e: Event) => {
             console.error("Audio Error:", (e.target as HTMLAudioElement).error);
         };
-        const handleSuccess = () => console.log("Audio loaded successfully");
 
         audio.addEventListener('error', handleError);
-        audio.addEventListener('canplaythrough', handleSuccess);
 
         return () => {
             audio.pause();
             audio.removeEventListener('error', handleError);
-            audio.removeEventListener('canplaythrough', handleSuccess);
             audioRef.current = null;
         };
     }, []);

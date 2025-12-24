@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, CSSProperties } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 interface Particle {
     id: number;
@@ -63,7 +63,7 @@ export default function CursorEffects() {
         setParticles(prev => [...prev, newParticle]);
     };
 
-    const animate = (time: number) => {
+    const animate = (_time: number) => {
         setParticles(prevParticles => {
             if (prevParticles.length === 0) return prevParticles;
 
