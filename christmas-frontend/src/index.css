@@ -6,30 +6,37 @@
 
 @layer base {
     .dark {
-        --color-brand-red: #ff4d6d;
-        --color-brand-pink: #ff8fa3;
-        --color-bg-light: #09090b;
-        --color-text-slate: #a1a1aa;
-        --color-text-dark: #f4f4f5;
+        --color-brand-red: #C41E3A;
+        --color-brand-pink: #EF4444;
+        --color-bg-light: #0B1026;
+        --color-text-slate: #9CA3AF;
+        --color-text-dark: #F8F5E6;
     }
 
     body {
-        @apply bg-white text-slate-900 font-sans antialiased;
+        @apply bg-christmas-cream dark:bg-christmas-dark text-slate-900 dark:text-christmas-cream font-sans antialiased selection:bg-christmas-red selection:text-white;
         font-family: 'Outfit', sans-serif;
+        background-image:
+            radial-gradient(circle at 15% 50%, rgba(196, 30, 58, 0.03) 0%, transparent 25%),
+            radial-gradient(circle at 85% 30%, rgba(22, 91, 51, 0.03) 0%, transparent 25%);
     }
 }
 
 @layer components {
     .btn-primary {
-        @apply bg-slate-900 text-white font-medium px-6 py-2.5 rounded-lg hover:bg-slate-800 transition-colors;
+        @apply bg-christmas-red text-white font-medium px-6 py-2.5 rounded-lg hover:bg-red-700 hover:shadow-lg hover:shadow-red-500/20 active:scale-95 transition-all duration-300 ease-out;
     }
 
     .btn-secondary {
-        @apply bg-white text-slate-900 border border-slate-200 font-medium px-6 py-2.5 rounded-lg hover:bg-slate-50 transition-colors;
+        @apply bg-white/80 dark:bg-white/5 backdrop-blur-sm text-slate-900 dark:text-white border border-slate-200 dark:border-white/10 font-medium px-6 py-2.5 rounded-lg hover:bg-white hover:border-christmas-red/30 hover:shadow-lg hover:shadow-christmas-red/5 active:scale-95 transition-all duration-300;
     }
 
     .card-clean {
-        @apply bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-sm;
+        @apply bg-white dark:bg-christmas-night border border-slate-200 dark:border-white/5 rounded-2xl shadow-sm hover:shadow-xl hover:shadow-christmas-red/5 transition-all duration-500;
+    }
+
+    .glass-panel {
+        @apply bg-white/70 dark:bg-christmas-night/70 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-xl;
     }
 
     .input-minimal {
@@ -38,5 +45,9 @@
 
     .font-friendly {
         font-family: 'Pacifico', cursive;
+    }
+
+    .text-gradient {
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-christmas-red to-christmas-neon;
     }
 }

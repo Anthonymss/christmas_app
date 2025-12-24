@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import AuthModal from './AuthModal';
+import SantaAvatar from './SantaAvatar';
 import { Gift, Menu, X, LogOut, Trophy, Disc, Image, Moon, Sun, Music } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -95,12 +96,14 @@ export default function Navbar() {
                                 </Link>
                                 <Link
                                     to="/profile"
-                                    className="p-2 text-slate-400 hover:text-[#bf152d] transition-colors rounded-lg hover:bg-rose-50 dark:hover:bg-rose-900/10"
+                                    className="p-1 px-2 text-slate-400 hover:text-[#bf152d] transition-colors rounded-lg hover:bg-rose-50 dark:hover:bg-rose-900/10"
                                     title="Mi Perfil"
                                 >
-                                    <div className="w-5 h-5 bg-[#bf152d] rounded-full flex items-center justify-center text-[10px] text-white font-bold">
-                                        {user?.username?.[0]?.toUpperCase() || 'U'}
-                                    </div>
+                                    <SantaAvatar size="sm">
+                                        <div className="w-8 h-8 bg-[#bf152d] rounded-full flex items-center justify-center text-xs text-white font-bold ring-2 ring-white dark:ring-zinc-800 shadow-sm">
+                                            {user?.username?.[0]?.toUpperCase() || 'U'}
+                                        </div>
+                                    </SantaAvatar>
                                 </Link>
                                 <button
                                     onClick={logout}

@@ -3,8 +3,9 @@ import VideoCard from '../components/VideoCard';
 import { getPosts, uploadPost, type Post as Video } from '../services/posts.service';
 import { useSSE } from '../hooks/useSSE';
 import { useAuth } from '../context/AuthContext';
-import { Upload, Plus } from 'lucide-react';
+import { Upload, Plus, HelpCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import InfoModal from '../components/InfoModal';
 
 export default function Villancicos() {
     const [videos, setVideos] = useState<Video[]>([]);
@@ -12,6 +13,7 @@ export default function Villancicos() {
     const containerRef = useRef<HTMLDivElement>(null);
     const { isAuthenticated } = useAuth();
     const [isUploading, setIsUploading] = useState(false);
+    const [showRules, setShowRules] = useState(false);
 
     const fetchVideos = useCallback(async () => {
         try {
@@ -63,6 +65,16 @@ export default function Villancicos() {
 
     return (
         <div className="h-[calc(100vh-64px)] w-full bg-black relative">
+            <div className="absolute top-4 left-4 z-50">
+                <button
+                    onClick={() => setShowRules(true)}
+                    className="p-2 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all"
+                    title="Reglas"
+                >
+                    <HelpCircle className="w-6 h-6" />
+                </button>
+            </div>
+
             {isAuthenticated && (
                 <div className="absolute top-4 right-4 z-50">
                     <label className={`
@@ -85,6 +97,30 @@ export default function Villancicos() {
                     </label>
                 </div>
             )}
+
+            <InfoModal
+                isOpen={showRules}
+                onClose={() => setShowRules(false)}
+                title="Reglas: Villancicos"
+            >
+                <div className="space-y-4 text-slate-600 dark:text-slate-300">
+                    <p>¡Demuestra tu espíritu navideño cantando!</p>
+                    <ul className="space-y-3">
+                        <li className="flex gap-2">
+                            <span className="text-[#bf152d] font-bold">•</span>
+                            <span>Sube un video corto cantando tu villancico favorito.</span>
+                        </li>
+                        <li className="flex gap-2">
+                            <span className="text-[#bf152d] font-bold">•</span>
+                            <span>Puede ser solo, en grupo o con tu mascota.</span>
+                        </li>
+                        <li className="flex gap-2">
+                            <span className="text-[#bf152d] font-bold">•</span>
+                            <span>Se valorará la creatividad y la energía festiva.</span>
+                        </li>
+                    </ul>
+                </div>
+            </InfoModal>
 
             <div
                 ref={containerRef}

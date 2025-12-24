@@ -251,7 +251,11 @@ export default function Ranking() {
                         </li>
                         <li className="flex gap-2">
                             <span className="text-[#bf152d] font-bold">2.</span>
-                            <span>En caso de <strong>empate</strong> en votos, gana el quien haya subido contenido <strong>primero</strong>.</span>
+                            <span>En caso de <strong>empate</strong> en votos, gana quien haya subido contenido <strong>primero</strong>.</span>
+                        </li>
+                        <li className="flex gap-2 p-3 bg-red-50 dark:bg-red-900/10 rounded-lg border border-red-100 dark:border-red-900/30">
+                            <span className="text-[#bf152d] font-bold">3.</span>
+                            <span className="font-medium text-[#bf152d] dark:text-[#ff4d6d]">Solo puede haber un ganador absoluto. Si ganas en múltiples categorías, deberás elegir en cuál deseas ser el primero.</span>
                         </li>
                     </ul>
                 </div>
