@@ -32,6 +32,18 @@ export class PostsController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @HttpPost('create')
+    async create(
+        @Request() req,
+        @Body('url') url: string,
+        @Body('category') category: PostCategory,
+        @Body('type') type: PostType,
+        @Body('description') description?: string
+    ) {
+        return this.postsService.create(req.user.userId, category, type, url, description);
+    }
+
+    @UseGuards(JwtAuthGuard)
     @Get('mine')
     async getMyPosts(@Request() req) {
         return this.postsService.getMyPosts(req.user.userId);

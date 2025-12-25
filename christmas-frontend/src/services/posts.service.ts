@@ -29,22 +29,36 @@ export const getPosts = async (category: string) => {
 };
 
 export const uploadPost = async (file: File, category: string, type: 'IMAGE' | 'VIDEO', description?: string) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('category', category);
-    formData.append('type', type);
-    if (description) formData.append('description', description);
-
     const token = localStorage.getItem('token');
     if (!token) {
         throw new Error('No estás autenticado (Token no encontrado)');
     }
 
-    const response = await axios.post(`${API_URL}/upload`, formData, {
+    // 1. Obtener URL prefirmada (S3)
+    const { data: presignData } = await axios.post(`${import.meta.env.VITE_API_URL}/uploads/presign`,
+        { mimeType: file.type },
+        { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    // 2. Subir archivo directamente a S3 (Bypass server limits)
+    await axios.put(presignData.uploadUrl, file, {
+        headers: {
+            'Content-Type': file.type
+        }
+    });
+
+    // 3. Crear el post con la URL del archivo
+    const response = await axios.post(`${API_URL}/create`, {
+        category,
+        type,
+        url: presignData.fileUrl,
+        description
+    }, {
         headers: {
             'Authorization': `Bearer ${token}`
         }
     });
+
     return response.data;
 };
 
