@@ -9,6 +9,12 @@ async function bootstrap() {
 
   app.use(morgan('dev'));
 
+  app.use((req, res, next) => {
+    console.log(`Incoming Request: ${req.method} ${req.url}`);
+    console.log('Headers:', JSON.stringify(req.headers));
+    next();
+  });
+
   // Increase body size limit for S3 uploads
   app.use(express.json({ limit: '1gb' }));
   app.use(express.urlencoded({ extended: true, limit: '1gb' }));
