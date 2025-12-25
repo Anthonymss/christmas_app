@@ -14,14 +14,12 @@ async function bootstrap() {
   app.use(express.urlencoded({ extended: true, limit: '1gb' }));
 
   app.enableCors({
-    origin: [
-      'http://localhost:5173',
-      'https://navidad-red.vercel.app',
-    ],
+    origin: 'https://navidad-red.vercel.app',
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
+
 
 
   app.useGlobalPipes(
