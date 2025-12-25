@@ -87,6 +87,7 @@ export default function VideoCard({ video, isActive, onUpdate }: Props) {
                     loop
                     playsInline
                     muted={isMuted}
+                    preload={isActive ? "auto" : "none"}
                 />
 
                 {!isPlaying && (
