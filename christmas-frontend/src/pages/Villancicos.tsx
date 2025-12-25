@@ -44,9 +44,7 @@ export default function Villancicos() {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        if (file.size > 100 * 1024 * 1024) {
-            return toast.error('El video debe pesar menos de 100MB');
-        }
+
 
         setIsUploading(true);
         const toastId = toast.loading('Subiendo villancico...');
