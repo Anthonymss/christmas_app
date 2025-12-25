@@ -36,9 +36,12 @@ export const uploadPost = async (file: File, category: string, type: 'IMAGE' | '
     if (description) formData.append('description', description);
 
     const token = localStorage.getItem('token');
+    if (!token) {
+        throw new Error('No estás autenticado (Token no encontrado)');
+    }
+
     const response = await axios.post(`${API_URL}/upload`, formData, {
         headers: {
-            'Content-Type': 'multipart/form-data',
             'Authorization': `Bearer ${token}`
         }
     });
